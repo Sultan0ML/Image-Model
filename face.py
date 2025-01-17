@@ -1,12 +1,22 @@
 import streamlit as st
 from diffusers import DiffusionPipeline
 import os 
-def generate_image(Body_shape_opt,Body_type_opt,Gender_opt,color_opt):
-    token=os.getenv("Hugging_Face_Token")
-    pipe = DiffusionPipeline.from_pretrained("black-forest-labs/FLUX.1-dev",token=token)
-    pipe.load_lora_weights("strangerzonehf/Flux-Midjourney-Mix2-LoRA")
+import streamlit as st
+from diffusers import DiffusionPipeline
+import os 
+
+def generate_image(Body_shape_opt, Body_type_opt, Gender_opt, color_opt):
+    # Ensure that the Hugging Face token is set in the environment
+    token = os.getenv("Hugging_Face_Token")
     
-    prompt=f"""MJ v6,Generate a personalized outfit recommendation for:
+    if token is None:
+        raise ValueError("Hugging Face token is missing. Please set the 'Hugging_Face_Token' environment variable.")
+    
+    # Load the StabilityAI model using the Hugging Face token for authentication
+    pipe = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-3.5-large", use_auth_token=token)
+    
+    # Define the prompt based on the user input
+    prompt = f"""MJ v6,Generate a personalized outfit recommendation for:
         Body Shape: {Body_shape_opt}
         Body Type: {Body_type_opt}
         Gender: {Gender_opt}
@@ -17,10 +27,15 @@ def generate_image(Body_shape_opt,Body_type_opt,Gender_opt,color_opt):
         Bottom wear: Design and length
         Footwear: Occasion-appropriate
         Accessories: To complete the outfit--ar 47:64 --v 6.0 --style raw"""
+    
+    # Generate the image using the prompt
     image = pipe(prompt).images[0]
 
-    image.show()
+    # Display the generated image in Streamlit
+    st.image(image, caption="Generated Outfit", use_column_width=True)
+
     return image
+
 
 st.title("Personalized Outfit Suggester")
 
