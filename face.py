@@ -1,11 +1,12 @@
-from huggingface_hub import InferenceClient
 import streamlit as st
-import os
+from diffusers import DiffusionPipeline
 
 def generate_image(Body_shape_opt,Body_type_opt,Gender_opt,color_opt):
-    token=os.getenv("Hugging_Face_Token")
-    client = InferenceClient("black-forest-labs/FLUX.1-dev", token=token)
-    prompt=f"""Generate a personalized outfit recommendation for:
+
+    pipe = DiffusionPipeline.from_pretrained("black-forest-labs/FLUX.1-dev")
+    pipe.load_lora_weights("strangerzonehf/Flux-Midjourney-Mix2-LoRA")
+    
+    prompt=f"""MJ v6,Generate a personalized outfit recommendation for:
         Body Shape: {Body_shape_opt}
         Body Type: {Body_type_opt}
         Gender: {Gender_opt}
@@ -15,9 +16,9 @@ def generate_image(Body_shape_opt,Body_type_opt,Gender_opt,color_opt):
         Top wear: Fit and color
         Bottom wear: Design and length
         Footwear: Occasion-appropriate
-        Accessories: To complete the outfit"""
-    # output is a PIL.Image object
-    image = client.text_to_image(prompt)
+        Accessories: To complete the outfit--ar 47:64 --v 6.0 --style raw"""
+    image = pipe(prompt).images[0]
+
     image.show()
     return image
 
