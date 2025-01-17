@@ -4,10 +4,13 @@ import os
 import streamlit as st
 from diffusers import DiffusionPipeline
 import os 
-
+from dotenv import load_dotenv
+load_dotenv()
+os.environ["Hugging_Face_Token"] = os.getenv("Hugging_Face_Token")
 def generate_image(Body_shape_opt, Body_type_opt, Gender_opt, color_opt):
     # Ensure that the Hugging Face token is set in the environment
     token = os.getenv("Hugging_Face_Token")
+    print("Hugging face token",token)
     
     if token is None:
         raise ValueError("Hugging Face token is missing. Please set the 'Hugging_Face_Token' environment variable.")
