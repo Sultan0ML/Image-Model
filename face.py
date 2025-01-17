@@ -1,9 +1,9 @@
 import streamlit as st
 from diffusers import DiffusionPipeline
-
+import os 
 def generate_image(Body_shape_opt,Body_type_opt,Gender_opt,color_opt):
-
-    pipe = DiffusionPipeline.from_pretrained("black-forest-labs/FLUX.1-dev")
+    token=os.getenv("Hugging_Face_Token")
+    pipe = DiffusionPipeline.from_pretrained("black-forest-labs/FLUX.1-dev",token=token)
     pipe.load_lora_weights("strangerzonehf/Flux-Midjourney-Mix2-LoRA")
     
     prompt=f"""MJ v6,Generate a personalized outfit recommendation for:
