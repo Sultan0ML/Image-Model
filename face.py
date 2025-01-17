@@ -2,24 +2,22 @@ import streamlit as st
 from diffusers import DiffusionPipeline
 import os 
 import streamlit as st
-from diffusers import DiffusionPipeline
+from diffusers import StableDiffusion3Pipeline
+from diffusers import StableDiffusionPipeline
 import os 
 from dotenv import load_dotenv
+import torch
 load_dotenv()
 os.environ["Hugging_Face_Token"] = os.getenv("Hugging_Face_Token")
 def generate_image(Body_shape_opt, Body_type_opt, Gender_opt, color_opt):
     # Ensure that the Hugging Face token is set in the environment
-    token = os.getenv("Hugging_Face_Token")
-    print("Hugging face token",token)
-    
-    if token is None:
-        raise ValueError("Hugging Face token is missing. Please set the 'Hugging_Face_Token' environment variable.")
-    
-    # Load the StabilityAI model using the Hugging Face token for authentication
-    pipe = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-3.5-large",token=token)
+    model_id1 = "dreamlike-art/dreamlike-diffusion-1.0"
+    model_id2 = "stabilityai/stable-diffusion-xl-base-1.0"
+    pipe = StableDiffusionPipeline.from_pretrained(model_id2, torch_dtype=torch.float32, use_safetensors=True)
+    pipe = pipe.to("cuda")
     
     # Define the prompt based on the user input
-    prompt = f"""MJ v6,Generate a personalized outfit recommendation for:
+    prompt = f"""Generate a personalized outfit recommendation for:
         Body Shape: {Body_shape_opt}
         Body Type: {Body_type_opt}
         Gender: {Gender_opt}
@@ -29,7 +27,7 @@ def generate_image(Body_shape_opt, Body_type_opt, Gender_opt, color_opt):
         Top wear: Fit and color
         Bottom wear: Design and length
         Footwear: Occasion-appropriate
-        Accessories: To complete the outfit--ar 47:64 --v 6.0 --style raw"""
+        Accessories: To complete the outfit"""
     
     # Generate the image using the prompt
     image = pipe(prompt).images[0]
@@ -56,3 +54,6 @@ face_img=st.file_uploader("Your Face Image")
 if st.button("Generate"):
     image=generate_image(Body_shape_opt,Body_type_opt,Gender_opt,color_opt)
     st.image("generated image",image)
+
+
+
