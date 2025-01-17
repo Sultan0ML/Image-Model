@@ -13,7 +13,7 @@ def generate_image(Body_shape_opt, Body_type_opt, Gender_opt, color_opt):
         raise ValueError("Hugging Face token is missing. Please set the 'Hugging_Face_Token' environment variable.")
     
     # Load the StabilityAI model using the Hugging Face token for authentication
-    pipe = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-3.5-large", use_auth_token=token)
+    pipe = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-3.5-large",token=token)
     
     # Define the prompt based on the user input
     prompt = f"""MJ v6,Generate a personalized outfit recommendation for:
