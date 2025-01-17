@@ -94,7 +94,7 @@ rembg
 gfpgan
 
 pytz
-
+python-dotenv
 PyYAML
 
 regex
