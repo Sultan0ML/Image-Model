@@ -1,9 +1,10 @@
 from huggingface_hub import InferenceClient
 import streamlit as st
+import os
 
 def generate_image(Body_shape_opt,Body_type_opt,Gender_opt,color_opt):
-    
-    client = InferenceClient("black-forest-labs/FLUX.1-dev", token="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")
+    token=os.getenv("Hugging_Face_Token")
+    client = InferenceClient("black-forest-labs/FLUX.1-dev", token=token)
     prompt=f"""Generate a personalized outfit recommendation for:
         Body Shape: {Body_shape_opt}
         Body Type: {Body_type_opt}
